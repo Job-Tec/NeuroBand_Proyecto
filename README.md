@@ -4,9 +4,18 @@
 **PROYECTO:** NeuroBand
 
 ## Integrantes
-* Estrada Mata José Job - [Código]
-* Navarro Ramos Mario Alberto - [Código]
-* Sanchez Perez Brian Leonel - [Código]
+* Estrada Mata José Job - 21240142
+* Navarro Ramos Mario Alberto - 
+* Sanchez Perez Brian Leonel - 
 
 ## Arquitectura de Datos
 ESP32 -> MQTT (Topic: /bio_data) -> PC (Procesamiento IA) -> MQTT (Topic: /feedback) -> Actuadores (Vibración/OLED)
+
+## Matriz de Tópicos MQTT (Estándar de 4 Niveles)
+
+El sistema implementa canales de comunicación desacoplados basados en la arquitectura del proyecto:
+
+| Nivel 1 (Proyecto) | Nivel 2 (Tipo Nodo) | Nivel 3 (Módulo) | Nivel 4 (ID) | Tópico Completo | Descripción |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `neuroband` | `telemetria` | `sensores` | `01` | `neuroband/telemetria/sensores/01` | Envío de JSON con datos de MAX30102, GSR y MPU6050. |
+| `neuroband` | `comando` | `actuadores` | `01` | `neuroband/comando/actuadores/01` | Recepción de órdenes de control (`ACTIVAR_CALMA` / `ESTADO_SEGURO`). |
