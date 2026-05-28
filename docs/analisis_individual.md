@@ -5,7 +5,7 @@
 
 ---
 
-## 1. Integrante: Sanchez Perez Brian Leonel -
+## 1. Integrante: Sanchez Perez Brian Leonel - 22240489
 
 * **Problema encontrado:** Al principio batallamos mucho porque cuando queríamos correr el programa en la ESP32, nos salía el error `ImportError: no module named 'dispositivos'`. Además, al inicio teníamos toda la lógica de los `if` metida en la misma placa, lo cual no cumplía con la regla de separar las cosas por MQTT.
 * **Solución aplicada:** Nos dimos cuenta que el archivo de los sensores solo estaba en la computadora y no en la pulsera. Usamos Thonny para guardar `dispositivos.py` directamente en la memoria de la ESP32. También, borramos las decisiones de la placa y pasamos todo ese código al script de Python de la compu.
@@ -13,7 +13,7 @@
 
 ---
 
-## 2. Integrante: Navarro Ramos Mario Alberto -
+## 2. Integrante: Navarro Ramos Mario Alberto - 22240328
 
 * **Problema encontrado:** A la hora de conectar algunos sensores en físico, tuvimos detalles con el hardware. El sensor de sudor (GSR) nos daba valores muy inestables y hasta negativos. Y por otro lado, cuando mandábamos la orden para relajar al usuario, el zumbador empezaba a sonar pero nunca se callaba, se quedaba pitando para siempre.
 * **Solución aplicada:** En el archivo de los sensores (la HAL), le pusimos límites fijos al GSR (un valor para seco y otro para mojado) para que no se saliera de los rangos. Para el zumbador, tuvimos que crear una función nueva llamada `apagar_zumbador()` y ponerla justo al final del ciclo de relajación para cortarle la corriente.

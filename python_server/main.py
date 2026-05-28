@@ -1,61 +1,71 @@
 """
-OBJETIVO: Recibir la telemetría de la ESP32 con timestamps, procesar los datos biométricos con la lógica de decisión de la NeuroBand y publicar comandos de control.
-INTEGRANTES:
-* Sanchez Perez Brian Leonel.
-* Navarro Ramos Mario Alberto.
-* Estrada Mata José Job de Jesús.
-PROYECTO: NeuroBand
+OBJETIVO: Servidor MQTT que procesa telemetría y evalúa crisis de ansiedad.
+INTEGRANTES: 
+* Sanchez Perez Brian Leonel 
+* Navarro Ramos Mario Alberto - 22240328
+* Estrada Mata José Job de Jesús - 21240142
+PROYECTO: NeuroBand - Interfaz de Bio-Retroalimentación Cognitiva
 """
-
-import json
-import time
-from datetime import datetime
 import paho.mqtt.client as mqtt
+import json
+from datetime import datetime
 
-# --- CONFIGURACIÓN MQTT ---
-MQTT_BROKER = "localhost"
-TOPIC_TELEMETRIA = "neuroband/telemetria/sensores/01"
-TOPIC_COMANDOS = "neuroband/comando/actuadores/01"
+# ==========================================
+# CONFIGURACIÓN MQTT 
+# ==========================================
+BROKER = "172.20.10.2" 
 
+# Tópicos
+TOPICO_TELEMETRIA = "neuroband/telemetria/sensores/01"
+TOPICO_COMANDO = "neuroband/comando/actuadores/01"
+
+# ==========================================
+# CALLBACKS
+# ==========================================
 def on_connect(client, userdata, flags, rc):
-    print(f"Servidor conectado al broker con código: {rc}")
-    client.subscribe(TOPIC_TELEMETRIA)
-    print(f"Escuchando telemetría en: {TOPIC_TELEMETRIA}")
+    print("Conectado al broker MQTT con código:", rc)
+    client.subscribe(TOPICO_TELEMETRIA)
+    print(f"Escuchando telemetría en: {TOPICO_TELEMETRIA}")
 
 def on_message(client, userdata, msg):
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+    # 1. Obtener la hora exacta
+    hora_actual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     try:
-        # CORRECCIÓN: Extraer el payload antes de decodificar
-        payload = msg.payload.decode()
-        datos = json.loads(payload)
+        # Decodificar el JSON que manda la ESP32
+        payload = json.loads(msg.payload.decode('utf-8'))
+        pulso = payload.get("pulso_bpm", 0)
+        sudor = payload.get("sudoracion_pct", 0)
+        movimiento = payload.get("en_movimiento", False)
         
-        pulso = datos["pulso_bpm"]
-        sudor = datos["sudoracion_pct"]
-        en_movimiento = datos["en_movimiento"]
+        # Imprimir en consola con formato Timestamp 
+        print(f"[{hora_actual}] Telemetría -> BPM: {pulso} | GSR: {sudor}% | Agitación: {movimiento}")
         
-        print(f"[{timestamp}] RECV -> BPM: {pulso} | GSR: {sudor}% | Movimiento: {en_movimiento}")
-        
-        # LÓGICA DE DECISIÓN
-        if pulso > 100 and sudor > 60.0 and not en_movimiento:
-            print(f"[{timestamp}] ¡ALERTA! Crisis detectada. Publicando comando de mitigación...")
-            client.publish(TOPIC_COMANDOS, "ACTIVAR_CALMA")
+        # ---------------------------------------------------------
+        # 2. LÓGICA DE DECISIÓN DE CRISIS
+        # ---------------------------------------------------------
+        # Si el pulso es mayor a 100 Y la persona está agitada (movimiento = True)
+        if pulso > 100 and movimiento == True:
+            print(f"[{hora_actual}] ¡ALERTA DE CRISIS DETECTADA! Enviando comando ACTIVAR_CALMA...")
+             
+             #Palabra clave para activar topico
+            client.publish(TOPICO_COMANDO, "ACTIVAR_CALMA")
+            
         else:
-            client.publish(TOPIC_COMANDOS, "ESTADO_NORMAL")
+            # ¡Palabra clave para activar topico
+            client.publish(TOPICO_COMANDO, "ESTADO_SEGURO")
             
     except Exception as e:
-        print(f"Error al procesar el mensaje MQTT: {e}")
+        print(f"[{hora_actual}] Error al procesar mensaje: {e}")
 
-def main():
-    # CORRECCIÓN: Declarar explícitamente la API v1 para evitar el DeprecationWarning
-    client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
-    client.on_connect = on_connect
-    client.on_message = on_message
+# ==========================================
+# BUCLE PRINCIPAL
+# ==========================================
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
 
-    print("Iniciando el Servidor de Procesamiento NeuroBand...")
-    client.connect(MQTT_BROKER, 1883, 60)
-
-    client.loop_forever()
-
-if __name__ == "__main__":
-    main()
+print("Iniciando servidor de monitoreo NeuroBand...")
+# Nos conectamos al broker que está corriendo en la IP 
+client.connect(BROKER, 1883, 60)
+client.loop_forever()

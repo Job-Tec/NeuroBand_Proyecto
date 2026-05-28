@@ -1,9 +1,9 @@
 """
 OBJETIVO: Conectar a Wi-Fi y Broker MQTT. Publicar telemetria de sensores y suscribirse a comandos de actuadores invocando la HAL.
 INTEGRANTES:
-* Sanchez Perez Brian Leonel.
-* Navarro Ramos Mario Alberto.
-* Estrada Mata José Job de Jesús.
+* Sanchez Perez Brian Leonel. - 22240489
+* Navarro Ramos Mario Alberto. - 22240328
+* Estrada Mata José Job de Jesús. - 21240142
 PROYECTO: NeuroBand
 """
 
@@ -14,8 +14,8 @@ from umqtt.simple import MQTTClient
 from dispositivos import SensoresNeuroBand, ActuadoresNeuroBand
 
 # --- CONFIGURACIÓN DE RED Y MQTT ---
-WIFI_SSID = ""
-WIFI_PASS = ""
+WIFI_SSID = "INFINITUME86D"
+WIFI_PASS = "9tsjFkyzFf"
 MQTT_BROKER = "192.168.1.71"
 CLIENT_ID = "NeuroBand_ESP32_01"
 

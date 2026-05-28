@@ -5,8 +5,8 @@
 
 ## Integrantes
 * Estrada Mata José Job - 21240142
-* Navarro Ramos Mario Alberto - 
-* Sanchez Perez Brian Leonel - 
+* Navarro Ramos Mario Alberto - 22240328
+* Sanchez Perez Brian Leonel - 22240489
 
 ## Arquitectura de Datos
 ESP32 -> MQTT (Topic: /bio_data) -> PC (Procesamiento IA) -> MQTT (Topic: /feedback) -> Actuadores (Vibración/OLED)

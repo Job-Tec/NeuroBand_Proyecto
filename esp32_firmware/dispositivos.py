@@ -1,8 +1,8 @@
 # PROYECTO: NeuroBand: Interfaz de Bio-Retroalimentacion Cognitiva
 # INTEGRANTES:
-# *Sanchez Perez Brian Leonel.
-# *Navarro Ramos Mario Alberto.
-# *Estrada Mata José Job de Jesús.
+# *Sanchez Perez Brian Leonel. - 22240489
+# *Navarro Ramos Mario Alberto. - 22240328
+# *Estrada Mata José Job de Jesús. - 21240142
 # DESCRIPCION: Biblioteca HAL (Hardware Abstraction Layer) que centraliza y 
 # abstrae la lectura de los sensores (Pulso, GSR, MPU6050) y el control 
 # de los actuadores (Motor ERM, OLED, Buzzer).
